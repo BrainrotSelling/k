@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Продажа брейнротов - Steal a Brainrot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-brain"></i> Продажа брейнротов</h1>
+            <p class="description">Брейнроты для игры Steal a Brainrot</p>
+            
+            <div class="info-box">
+                <p><i class="fas fa-money-bill-wave"></i> Оплата производится сначала, затем передача на приватном сервере</p>
+                <p><i class="fas fa-check-circle"></i> Выберите один или несколько брейнротов</p>
+            </div>
+        </header>
+        
+        <div class="items-grid">
+            <div class="item-card" data-name="Bombardinni Tortinni" data-price="15">
+                <div class="item-name">Bombardinni Tortinni</div>
+                <div class="item-stats"><i class="fas fa-bolt stats-icon"></i> 720K/S</div>
+                <div class="item-price"><i class="fas fa-coins robux-icon"></i> 15 робуксов</div>
+            </div>
+            
+            <div class="item-card" data-name="La Vacca Saturna Saturnita" data-price="6">
+                <div class="item-name">La Vacca Saturna Saturnita</div>
+                <div class="item-stats"><i class="fas fa-bolt stats-icon"></i> 450K/S</div>
+                <div class="item-price"><i class="fas fa-coins robux-icon"></i> 6 робуксов</div>
+            </div>
+            
+            <div class="item-card" data-name="Tractoro Dinosauro" data-price="25">
+                <div class="item-name">Tractoro Dinosauro</div>
+                <div class="item-stats"><i class="fas fa-bolt stats-icon"></i> 1.6M/S</div>
+                <div class="item-price"><i class="fas fa-coins robux-icon"></i> 25 робуксов</div>
+            </div>
+            
+            <div class="item-card" data-name="Extinct Matteo" data-price="18">
+                <div class="item-name">Extinct Matteo</div>
+                <div class="item-stats"><i class="fas fa-bolt stats-icon"></i> 650K/S</div>
+                <div class="item-price"><i class="fas fa-coins robux-icon"></i> 18 робуксов</div>
+            </div>
+        </div>
+        
+        <div class="selected-items" id="selectedItems">
+            <h3><i class="fas fa-shopping-basket"></i> Выбранные брейнроты:</h3>
+            <p id="noSelection">Пока ничего не выбрано</p>
+            <!-- Сюда будут добавляться выбранные товары -->
+        </div>
+        
+        <div class="total-price pulse" id="totalPrice">
+            <i class="fas fa-receipt"></i> Итого: 0 робуксов
+        </div>
+        
+        <div class="process-info">
+            <p><strong>Процесс покупки:</strong></p>
+            <p>1. Выберите нужные брейнроты и оформите заказ</p>
+            <p>2. Мы свяжемся с вами в Roblox для подтверждения заказа</p>
+            <p>3. Оплатите заказ переводом Robux</p>
+            <p>4. После подтверждения оплаты получите брейнроты на приватном сервере</p>
+        </div>
+        
+        <div class="order-form">
+            <h2 class="form-title"><i class="fas fa-shopping-cart"></i> Форма заказа</h2>
+            
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="nickname"><i class="fas fa-user"></i> Ваш никнейм в Roblox:</label>
+                    <input type="text" id="nickname" name="nickname" required placeholder="Введите ваш никнейм">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message"><i class="fas fa-comment"></i> Дополнительная информация:</label>
+                    <textarea id="message" name="message" placeholder="Укажите удобное время для передачи или другие детали"></textarea>
+                </div>
+                
+                <button type="submit"><i class="fas fa-paper-plane"></i> Отправить заказ</button>
+            </form>
+        </div>
+        
+        <footer>
+            <p>После отправки заказа с вами свяжутся в Roblox для уточнения деталей передачи</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
