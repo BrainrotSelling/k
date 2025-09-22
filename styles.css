@@ -327,7 +327,7 @@
             left: 100%;
         }
 
-        footer {
+footer {
     text-align: center;
     color: var(--text-secondary);
     margin-top: 50px;
