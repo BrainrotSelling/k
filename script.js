@@ -1,3 +1,7 @@
+// Конфигурация Telegram бота
+const TELEGRAM_BOT_TOKEN = '8332292030:AAE05VXZVX6cbxQKNQAS_4Zg7rfnZc8MMqU';
+const TELEGRAM_CHAT_ID = '7474847646';
+
 // Переменные для хранения состояния
 let selectedItems = [];
 
@@ -92,7 +96,7 @@ function setupFormHandler() {
         const nickname = document.getElementById('nickname').value.trim();
         const message = document.getElementById('message').value.trim();
         
-        // Валидация на клиенте
+        // Валидация
         if (!nickname) {
             showAlert('❌ Введите ваш никнейм!', 'error');
             return;
@@ -103,12 +107,12 @@ function setupFormHandler() {
             return;
         }
         
-        // Отправка заказа через API
+        // Отправка заказа
         await sendOrder(nickname, message);
     });
 }
 
-// Функция отправки заказа через серверный API
+// Функция отправки заказа в Telegram
 async function sendOrder(nickname, userMessage) {
     const button = document.querySelector('#orderForm button[type="submit"]');
     const originalText = button.innerHTML;
@@ -118,31 +122,48 @@ async function sendOrder(nickname, userMessage) {
     button.disabled = true;
     
     try {
-        // Отправляем POST запрос на наш сервер
-        const response = await fetch('/api/send-order', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                nickname: nickname,
-                selectedItems: selectedItems,
-                userMessage: userMessage
-            })
+        // Формируем сообщение для Telegram
+        const total = selectedItems.reduce((sum, item) => sum + item.price, 0);
+        
+        let message = `🛒 НОВЫЙ ЗАКАЗ БРЕЙНРОТОВ%0A%0A`;
+        message += `👤 Никнейм: ${encodeURIComponent(nickname)}%0A%0A`;
+        
+        message += `📦 Выбранные брейнроты:%0A`;
+        selectedItems.forEach(item => {
+            message += `• ${encodeURIComponent(item.name)} - ${item.price} Robux%0A`;
         });
         
-        const data = await response.json();
+        message += `%0A💰 Итого: ${total} Robux%0A`;
         
-        if (response.ok && data.success) {
-            showAlert('✅ Заказ отправлен! С вами свяжутся в Roblox', 'success');
-            resetForm();
+        if (userMessage) {
+            message += `%0A📝 Сообщение: ${encodeURIComponent(userMessage)}%0A`;
+        }
+        
+        message += `%0A⏰ Время: ${new Date().toLocaleString('ru-RU')}`;
+        
+        // Отправляем запрос к Telegram API
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${message}`;
+        
+        const response = await fetch(url);
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            if (data.ok) {
+                showAlert('✅ Заказ отправлен! С вами свяжутся в Roblox', 'success');
+                resetForm();
+            } else {
+                console.error('Ошибка Telegram:', data);
+                showAlert('❌ Ошибка при отправке заказа', 'error');
+            }
         } else {
-            showAlert(`❌ ${data.message || 'Ошибка при отправке заказа'}`, 'error');
+            console.error('Ошибка HTTP:', response.status);
+            showAlert('❌ Ошибка сети при отправке заказа', 'error');
         }
         
     } catch (error) {
-        console.error('Ошибка сети:', error);
-        showAlert('❌ Ошибка сети. Проверьте подключение к интернету', 'error');
+        console.error('Ошибка:', error);
+        showAlert('❌ Ошибка сети при отправке заказа', 'error');
     } finally {
         // Восстанавливаем кнопку
         button.innerHTML = originalText;
@@ -160,11 +181,11 @@ function resetForm() {
         card.classList.remove('selected');
     });
     
-    // Обновляем отображение корзины
+    // Обновляем отображение
     updateSelection();
 }
 
-// Показ уведомлений пользователю
+// Показ уведомлений
 function showAlert(message, type) {
     // Удаляем предыдущие уведомления
     document.querySelectorAll('.alert').forEach(alert => alert.remove());
@@ -174,102 +195,22 @@ function showAlert(message, type) {
     alert.className = `alert alert-${type}`;
     alert.innerHTML = `
         <span>${message}</span>
-        <button onclick="this.parentElement.remove()" title="Закрыть">×</button>
+        <button onclick="this.parentElement.remove()">×</button>
     `;
     
-    // Устанавливаем стили в зависимости от типа
+    // Добавляем стили
     if (type === 'success') {
-        alert.style.background = 'linear-gradient(135deg, #00d4aa 0%, #00b894 100%)';
-    } else if (type === 'error') {
-        alert.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #e55656 100%)';
+        alert.style.backgroundColor = '#4CAF50';
+    } else {
+        alert.style.backgroundColor = '#f44336';
     }
     
-    // Общие стили для уведомления
-    alert.style.position = 'fixed';
-    alert.style.top = '25px';
-    alert.style.right = '25px';
-    alert.style.padding = '18px 25px';
-    alert.style.borderRadius = '12px';
-    alert.style.color = 'white';
-    alert.style.fontWeight = '600';
-    alert.style.zIndex = '1000';
-    alert.style.display = 'flex';
-    alert.style.alignItems = 'center';
-    alert.style.gap = '12px';
-    alert.style.minWidth = '350px';
-    alert.style.maxWidth = '500px';
-    alert.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)';
-    alert.style.backdropFilter = 'blur(20px)';
-    alert.style.border = '1px solid rgba(255, 255, 255, 0.1)';
-    alert.style.animation = 'slideInRight 0.5s ease-out';
-    
-    // Стили для кнопки закрытия
-    const closeButton = alert.querySelector('button');
-    closeButton.style.background = 'none';
-    closeButton.style.border = 'none';
-    closeButton.style.color = 'white';
-    closeButton.style.fontSize = '20px';
-    closeButton.style.cursor = 'pointer';
-    closeButton.style.marginLeft = 'auto';
-    closeButton.style.opacity = '0.8';
-    closeButton.style.transition = 'opacity 0.3s ease';
-    closeButton.style.padding = '0';
-    closeButton.style.width = '24px';
-    closeButton.style.height = '24px';
-    closeButton.style.display = 'flex';
-    closeButton.style.alignItems = 'center';
-    closeButton.style.justifyContent = 'center';
-    
-    closeButton.addEventListener('mouseenter', function() {
-        this.style.opacity = '1';
-    });
-    
-    closeButton.addEventListener('mouseleave', function() {
-        this.style.opacity = '0.8';
-    });
-    
-    // Добавляем CSS анимацию для уведомлений (если еще не добавлена)
-    if (!document.querySelector('#alert-animations')) {
-        const style = document.createElement('style');
-        style.id = 'alert-animations';
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            
-            @keyframes slideOutRight {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // Добавляем уведомление на страницу
     document.body.appendChild(alert);
     
     // Автоматическое скрытие через 5 секунд
     setTimeout(() => {
         if (alert.parentElement) {
-            alert.style.animation = 'slideOutRight 0.5s ease-out';
-            setTimeout(() => {
-                if (alert.parentElement) {
-                    alert.remove();
-                }
-            }, 500);
+            alert.remove();
         }
     }, 5000);
 }
