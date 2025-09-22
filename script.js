@@ -273,26 +273,3 @@ function showAlert(message, type) {
         }
     }, 5000);
 }
-
-// Дебаг функция для проверки состояния (можно удалить в продакшене)
-function debugState() {
-    console.log('Выбранные товары:', selectedItems);
-    console.log('Общая сумма:', selectedItems.reduce((sum, item) => sum + item.price, 0));
-}
-
-// Функция для проверки доступности API (опционально)
-async function checkAPIHealth() {
-    try {
-        const response = await fetch('/api/health');
-        if (response.ok) {
-            console.log('✅ API сервер доступен');
-        } else {
-            console.warn('⚠️ API сервер недоступен');
-        }
-    } catch (error) {
-        console.error('❌ Ошибка соединения с API:', error);
-    }
-}
-
-// Проверяем API при загрузке (опционально)
-// checkAPIHealth();
